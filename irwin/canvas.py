@@ -17,7 +17,7 @@ class Canvas:
         self._y_min = y_min
         self._x_to_dot = (self._x_dots - 1) / (x_max - x_min)
         self._y_to_dot = (self._y_dots - 1) / (y_max - y_min)
-        self._canvas = bytearray(width * height)
+        self._canvas = [bytearray(width) for _ in range(height)]
 
     def draw_point(self, x, y):
         x_dot = self._value_to_dot_x(x)
@@ -60,8 +60,7 @@ class Canvas:
 
         x_col, x_index = divmod(x_dot, 2)
         y_row, y_index = divmod(y_dot, 4)
-        index = self._width * y_row + x_col
-        self._canvas[index] |= INDEXES_TO_BIT[y_index][x_index]
+        self._canvas[y_row][x_col] |= INDEXES_TO_BIT[y_index][x_index]
 
     def _value_to_dot_x(self, value):
         return int((value - self._x_min) * self._x_to_dot)
@@ -71,10 +70,9 @@ class Canvas:
 
     def render(self):
         lines = []
-        values = iter(self._canvas)
 
-        for _ in range(self._height):
-            line = ''.join([chr(0x2800 + next(values)) for _ in range(self._width)])
+        for row in self._canvas:
+            line = ''.join([chr(0x2800 + value) for value in row])
             lines.insert(0, line)
 
         lines.append('')
