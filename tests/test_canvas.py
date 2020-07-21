@@ -111,3 +111,20 @@ class CanvasTest(unittest.TestCase):
                           '⠀⠀⡜⠀⠀⠀⠀⠀⠀⠀\n'
                           '⠀⡜⠀⠀⠀⠀⠀⠀⠀⠀\n'
                           '⡜⠀⠀⠀⠀⠀⠀⠀⠀⠀\n')
+
+    def test_draw_line_length_zero(self):
+        canvas = irwin.Canvas(10, 10, 0, 0, 2, 2)
+
+        canvas.draw_line(1, 1, 1, 1)
+
+        self.assertCanvas(canvas.render(),
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n')

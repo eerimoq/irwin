@@ -40,10 +40,8 @@ class Canvas:
         x_diff = (x1_dot - x0_dot + 1)
         y_diff = (y1_dot - y0_dot + 1)
         steps = max(abs(x_diff), abs(y_diff))
-
-        if steps > 0:
-            x_slope = x_diff / steps
-            y_slope = y_diff / steps
+        x_slope = x_diff / steps
+        y_slope = y_diff / steps
 
         if y0_dot > y1_dot:
             y0_dot -= 1
