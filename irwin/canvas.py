@@ -18,13 +18,14 @@ class Canvas:
         self._x_to_dot = (self._x_dots - 1) / (x_max - x_min)
         self._y_to_dot = (self._y_dots - 1) / (y_max - y_min)
         self._canvas = [bytearray(width) for _ in range(height)]
+        self._colors = [bytearray(width) for _ in range(height)]
 
-    def draw_point(self, x, y):
+    def draw_point(self, x, y, color=0):
         x_dot = self._value_to_dot_x(x)
         y_dot = self._value_to_dot_y(y)
-        self._draw_dot(x_dot, y_dot)
+        self._draw_dot(x_dot, y_dot, color)
 
-    def draw_line(self, x0, y0, x1, y1):
+    def draw_line(self, x0, y0, x1, y1, color=0):
         if x0 > x1:
             x = x0
             x0 = x1
@@ -48,9 +49,11 @@ class Canvas:
         y_slope = y_diff / steps
 
         for i in range(steps):
-            self._draw_dot(int(x0_dot + x_slope * i), int(y0_dot + y_slope * i))
+            self._draw_dot(int(x0_dot + x_slope * i),
+                           int(y0_dot + y_slope * i),
+                           color)
 
-    def _draw_dot(self, x_dot, y_dot):
+    def _draw_dot(self, x_dot, y_dot, color):
         if not 0 <= x_dot < self._x_dots:
             return
 
@@ -60,7 +63,8 @@ class Canvas:
         x_col, x_index = divmod(x_dot, 2)
         y_row, y_index = divmod(y_dot, 4)
         self._canvas[y_row][x_col] |= INDEXES_TO_BIT[y_index][x_index]
-
+        self._colors[y_row][x_col] = color
+        
     def _value_to_dot_x(self, value):
         return int((value - self._x_min) * self._x_to_dot)
 
@@ -68,10 +72,12 @@ class Canvas:
         return int((value - self._y_min) * self._y_to_dot)
 
     def render(self):
-        lines = []
-
-        for row in self._canvas:
-            line = ''.join([chr(0x2800 + value) for value in row])
-            lines.insert(0, line)
-
-        return '\n'.join(lines)
+        return '\n'.join(reversed([
+            ''.join([
+                f'\x1b[3{color}m{chr(0x2800 + value)}\x1b[0m'
+                if color
+                else chr(0x2800 + value)
+                for value, color in zip(canvas_row, colors_row)
+            ])
+            for canvas_row, colors_row in zip(self._canvas, self._colors)
+        ]))
