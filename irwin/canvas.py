@@ -8,7 +8,7 @@ INDEXES_TO_BIT = (
 
 class Canvas:
 
-    def __init__(self, width, height, x_min, y_min, x_max, y_max):
+    def __init__(self, width, height, x_min, x_max, y_min, y_max):
         self._width = width
         self._height = height
         self._x_dots = 2 * width

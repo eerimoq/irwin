@@ -27,8 +27,8 @@ Draw on the canvas and render it. Print the rendered canvas.
    canvas = irwin.Canvas(width=40,
                          height=20,
                          x_min=0,
-                         y_min=0,
                          x_max=10,
+                         y_min=0,
                          y_max=10)
 
    # Draw the canvas edges.
