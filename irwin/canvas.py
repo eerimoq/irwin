@@ -37,14 +37,15 @@ class Canvas:
         y0_dot = self._value_to_dot_y(y0)
         x1_dot = self._value_to_dot_x(x1)
         y1_dot = self._value_to_dot_y(y1)
+
+        if y0_dot > y1_dot:
+            y1_dot -= 1
+
         x_diff = (x1_dot - x0_dot + 1)
         y_diff = (y1_dot - y0_dot + 1)
         steps = max(abs(x_diff), abs(y_diff))
         x_slope = x_diff / steps
         y_slope = y_diff / steps
-
-        if y0_dot > y1_dot:
-            y0_dot -= 1
 
         for i in range(steps):
             self._draw_dot(int(x0_dot + x_slope * i), int(y0_dot + y_slope * i))
@@ -72,7 +73,5 @@ class Canvas:
         for row in self._canvas:
             line = ''.join([chr(0x2800 + value) for value in row])
             lines.insert(0, line)
-
-        lines.append('')
 
         return '\n'.join(lines)
