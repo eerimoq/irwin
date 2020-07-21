@@ -15,10 +15,8 @@ class Canvas:
         self._y_dots = 4 * height
         self._x_min = x_min
         self._y_min = y_min
-        self._x_max = x_max
-        self._y_max = y_max
-        self._x_to_dot = self._x_dots / (x_max - x_min)
-        self._y_to_dot = self._y_dots / (y_max - y_min)
+        self._x_to_dot = (self._x_dots - 1) / (x_max - x_min)
+        self._y_to_dot = (self._y_dots - 1) / (y_max - y_min)
         self._canvas = bytearray(width * height)
 
     def draw_point(self, x, y):
@@ -39,8 +37,8 @@ class Canvas:
         y0_dot = self._value_to_dot_y(y0)
         x1_dot = self._value_to_dot_x(x1)
         y1_dot = self._value_to_dot_y(y1)
-        x_diff = (x1_dot - x0_dot)
-        y_diff = (y1_dot - y0_dot)
+        x_diff = (x1_dot - x0_dot + 1)
+        y_diff = (y1_dot - y0_dot + 1)
         steps = max(abs(x_diff), abs(y_diff))
 
         if steps > 0:
