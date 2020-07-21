@@ -1,2 +1,2 @@
 test:
-	coverage run --source=irwin setup.py test
+	python3 setup.py test
