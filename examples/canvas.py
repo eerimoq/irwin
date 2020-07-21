@@ -1,6 +1,11 @@
 import irwin
 
-canvas = irwin.Canvas(40, 20, 0, 0, 10, 10)
+canvas = irwin.Canvas(width=40,
+                      height=20,
+                      x_min=0,
+                      y_min=0,
+                      x_max=10,
+                      y_max=10)
 
 # Draw the canvas edges.
 canvas.draw_line(0, 0, 0, 10)
