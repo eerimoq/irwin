@@ -27,4 +27,7 @@ setup(name='irwin',
       packages=find_packages(exclude=['tests']),
       install_requires=[],
       test_suite="tests",
-      include_package_data=True)
+      include_package_data=True,
+      entry_points = {
+          'console_scripts': ['irwin=irwin.__init__:main']
+      })
