@@ -29,14 +29,14 @@ output.
 
 .. code-block:: text
 
-   $ irwin "cat /proc/uptime | awk '{ print $1 }'"
+   $ irwin "cat /proc/uptime | awk '{ print \$1 }'"
 
 This is how to plot the CPU load.
 
 .. code-block:: text
 
-   $ irwin --algoritm delta --y-min 0 --y-max 100 --scale -1 --offset 100 \
-         "head -1 /proc/stat | awk '{ print $5 }'"
+   $ irwin --algorithm delta --y-min 0 --y-max 100 --scale -0.25 --offset 100 \
+         "head -1 /proc/stat | awk '{ print \$5 }'"
 
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.

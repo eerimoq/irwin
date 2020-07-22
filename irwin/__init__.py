@@ -4,10 +4,24 @@ import logging
 
 from .canvas import Canvas
 from .version import __version__
+from . import timeseries
 
 
 def do_main(args):
-    pass
+    if args.file:
+        command = None
+        path = args.cmdorfile
+    else:
+        command = args.cmdorfile
+        path = None
+
+    timeseries.run_curses(command,
+                          path,
+                          args.algorithm,
+                          args.y_min,
+                          args.y_max,
+                          args.scale,
+                          args.offset)
 
 
 def main():
@@ -24,6 +38,27 @@ def main():
                         action='version',
                         version=__version__,
                         help='Print version information and exit.')
+    parser.add_argument('-a', '--algorithm',
+                        default='none',
+                        choices=('none', 'delta'),
+                        help='Algorithm (default: %(default)s).')
+    parser.add_argument('--y-min',
+                        type=float,
+                        help='Y minimum.')
+    parser.add_argument('--y-max',
+                        type=float,
+                        help='Y maximum.')
+    parser.add_argument('--scale',
+                        type=float,
+                        default=1,
+                        help='Value scale (default: %(default)s).')
+    parser.add_argument('--offset',
+                        type=float,
+                        default=0,
+                        help='Value offset (default: %(default)s).')
+    parser.add_argument('-f', '--file',
+                        action='store_true',
+                        help='Read data from a file.')
     parser.add_argument('cmdorfile', help='Command or file.')
 
     args = parser.parse_args()
