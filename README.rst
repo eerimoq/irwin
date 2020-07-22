@@ -27,13 +27,13 @@ Time series
 Run ``cat /proc/uptime | cut -d ' ' -f 1 -`` periodically any plot its
 output.
 
-.. text-block:: text
+.. code-block:: text
 
    $ irwin "cat /proc/uptime | awk '{ print $1 }'"
 
 This is how to plot the CPU load.
 
-.. text-block:: text
+.. code-block:: text
 
    $ irwin --algoritm delta --y-min 0 --y-max 100 --scale -1 --offset 100 \
          "head -1 /proc/stat | awk '{ print $5 }'"
@@ -41,7 +41,7 @@ This is how to plot the CPU load.
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.
 
-.. text-block:: text
+.. code-block:: text
 
    $ echo "0,2 1,1 2,0 3,-1 4,1 5,3 6,5 7,7" > data.txt
    $ irwin -f data.txt
