@@ -29,14 +29,14 @@ output.
 
 .. code-block:: text
 
-   $ irwin "cat /proc/uptime | awk '{ print \$1 }'"
+   $ irwin -c "cat /proc/uptime | awk '{ print \$1 }'"
 
 This is how to plot the CPU load on a machine with 4 CPUs.
 
 .. code-block:: text
 
-   $ irwin --algorithm delta --y-min 0 --y-max 100 --scale -0.25 --offset 100 \
-         "head -1 /proc/stat | awk '{ print \$5 }'"
+   $ irwin -a delta -y 0 -Y 100 -s -0.25 -o 100 \
+         -c "head -1 /proc/stat | awk '{ print \$5 }'"
 
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.
@@ -44,7 +44,7 @@ by any whitespace character.
 .. code-block:: text
 
    $ echo "0,2 1,1 2,0 3,-1 4,1 5,3 6,5 7,7" > data.txt
-   $ irwin -f data.txt
+   $ irwin data.txt
 
 Scripting
 ^^^^^^^^^

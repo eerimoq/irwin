@@ -8,15 +8,8 @@ from . import timeseries
 
 
 def do_main(args):
-    if args.file:
-        command = None
-        path = args.cmdorfile
-    else:
-        command = args.cmdorfile
-        path = None
-
-    timeseries.run_curses(command,
-                          path,
+    timeseries.run_curses(args.file,
+                          args.command,
                           args.algorithm,
                           args.y_min,
                           args.y_max,
@@ -56,10 +49,11 @@ def main():
                         type=float,
                         default=0,
                         help='Value offset (default: %(default)s).')
-    parser.add_argument('-f', '--file',
-                        action='store_true',
-                        help='Read data from a file.')
-    parser.add_argument('cmdorfile', help='Command or file.')
+    parser.add_argument('-c', '--command',
+                        help='Command to run periodically.')
+    parser.add_argument('file',
+                        nargs='?',
+                        help='File with data to plot.')
 
     args = parser.parse_args()
 

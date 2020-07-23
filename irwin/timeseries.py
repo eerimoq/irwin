@@ -1,3 +1,4 @@
+import sys
 import os
 import threading
 import re
@@ -71,20 +72,23 @@ class Plot:
 
     def __init__(self,
                  stdscr,
-                 command,
                  path,
+                 command,
                  algorithm,
                  y_min,
                  y_max,
                  scale,
                  offset):
         self._stdscr = stdscr
+        title = []
+        
+        if path is not None:
+            title.append(path)
 
         if command is not None:
-            self._title = command
-        else:
-            self._title = path
+            title.append(command)
 
+        self._title = '; '.join(title)
         self._output_queue = queue.Queue()
         self._nrows, self._ncols = stdscr.getmaxyx()
         self._modified = True
@@ -116,8 +120,6 @@ class Plot:
         curses.init_pair(1, curses.COLOR_CYAN, -1)
         curses.init_pair(2, curses.COLOR_RED, -1)
 
-        self._producer = Producer(command, self._output_queue)
-
         if path is not None:
             timestamps = []
             values = []
@@ -132,17 +134,12 @@ class Plot:
                 self.process_data(timestamp, value)
 
             if timestamps:
-                minimum_timestamp = min(timestamps)
-                maximum_timestamp = max(timestamps)
-                minimum_value = min(values)
-                maximum_value = max(values)
+                self._timespan = max(timestamps) - min(timestamps)
+                self._valuespan = max(values) - min(values)
 
-                self._timespan = maximum_timestamp - minimum_timestamp
-                self._valuespan = maximum_value - minimum_value
-                self._x_axis_maximum = maximum_timestamp
-                self._y_axis_maximum = maximum_value
-                self.ensure_moving()
-        else:
+        self._producer = Producer(command, self._output_queue)
+
+        if command is not None:
             self._producer.start()
 
     def _is_connected(self):
@@ -598,8 +595,8 @@ class Plot:
             self._modified = True
 
 
-def run_curses(command,
-               path,
+def run_curses(path,
+               command,
                algorithm,
                y_min,
                y_max,
@@ -607,8 +604,8 @@ def run_curses(command,
                offset):
     def plot(stdscr):
         Plot(stdscr,
-             command,
              path,
+             command,
              algorithm,
              y_min,
              y_max,
