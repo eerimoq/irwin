@@ -24,15 +24,15 @@ Command line
 Time series
 """""""""""
 
-Run ``cat /proc/uptime | cut -d ' ' -f 1 -`` periodically any plot its
-output.
+Run ``cat /proc/uptime | awk '{ print \$1 }'`` periodically any plot
+its output.
 
 .. code-block:: text
 
    $ irwin -c "cat /proc/uptime | awk '{ print \$1 }'"
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/uptime.gif
-   
+
 This is how to plot the CPU load on a machine with 4 CPUs.
 
 .. code-block:: text
