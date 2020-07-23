@@ -31,12 +31,16 @@ output.
 
    $ irwin -c "cat /proc/uptime | awk '{ print \$1 }'"
 
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/uptime.gif
+   
 This is how to plot the CPU load on a machine with 4 CPUs.
 
 .. code-block:: text
 
    $ irwin -a delta -y 0 -Y 100 -s -0.25 -o 100 \
          -c "head -1 /proc/stat | awk '{ print \$5 }'"
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/cpu.gif
 
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.
@@ -45,6 +49,8 @@ by any whitespace character.
 
    $ echo "0,2 1,1 2,0 3,-1 4,1 5,3 6,5 7,7" > data.txt
    $ irwin data.txt
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/data.gif
 
 Scripting
 ^^^^^^^^^
