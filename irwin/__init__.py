@@ -42,17 +42,17 @@ def main():
                         default='none',
                         choices=('none', 'delta'),
                         help='Algorithm (default: %(default)s).')
-    parser.add_argument('--y-min',
+    parser.add_argument('-y', '--y-min',
                         type=float,
-                        help='Y minimum.')
-    parser.add_argument('--y-max',
+                        help='Minimum value on the y-axis.')
+    parser.add_argument('-Y', '--y-max',
                         type=float,
-                        help='Y maximum.')
-    parser.add_argument('--scale',
+                        help='Maximum value on the y-axis.')
+    parser.add_argument('-s', '--scale',
                         type=float,
                         default=1,
                         help='Value scale (default: %(default)s).')
-    parser.add_argument('--offset',
+    parser.add_argument('-o', '--offset',
                         type=float,
                         default=0,
                         help='Value offset (default: %(default)s).')

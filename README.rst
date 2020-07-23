@@ -31,7 +31,7 @@ output.
 
    $ irwin "cat /proc/uptime | awk '{ print \$1 }'"
 
-This is how to plot the CPU load.
+This is how to plot the CPU load on a machine with 4 CPUs.
 
 .. code-block:: text
 

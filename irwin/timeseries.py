@@ -84,7 +84,7 @@ class Plot:
             self._title = command
         else:
             self._title = path
-            
+
         self._output_queue = queue.Queue()
         self._nrows, self._ncols = stdscr.getmaxyx()
         self._modified = True
@@ -116,32 +116,33 @@ class Plot:
         curses.init_pair(1, curses.COLOR_CYAN, -1)
         curses.init_pair(2, curses.COLOR_RED, -1)
 
+        self._producer = Producer(command, self._output_queue)
+
         if path is not None:
-            minimum_timestamp = None
-            maximum_timestamp = None
-            
+            timestamps = []
+            values = []
+
             with open(path, 'r') as fin:
                 for sample in fin.read().split():
                     timestamp, value = sample.split(',')
-                    timestamp = float(timestamp)
-                    self.process_data(timestamp, value)
+                    timestamps.append(float(timestamp))
+                    values.append(float(value))
 
-                    if minimum_timestamp is None:
-                        minimum_timestamp = timestamp
-                    elif timestamp < minimum_timestamp:
-                        minimum_timestamp = timestamp
-                        
-                    if maximum_timestamp is None:
-                        maximum_timestamp = timestamp
-                    elif timestamp > maximum_timestamp:
-                        maximum_timestamp = timestamp
+            for timestamp, value in zip(timestamps, values):
+                self.process_data(timestamp, value)
 
-            if minimum_timestamp is not None:
+            if timestamps:
+                minimum_timestamp = min(timestamps)
+                maximum_timestamp = max(timestamps)
+                minimum_value = min(values)
+                maximum_value = max(values)
+
                 self._timespan = maximum_timestamp - minimum_timestamp
-
-        self._producer = Producer(command, self._output_queue)
-        
-        if command is not None:
+                self._valuespan = maximum_value - minimum_value
+                self._x_axis_maximum = maximum_timestamp
+                self._y_axis_maximum = maximum_value
+                self.ensure_moving()
+        else:
             self._producer.start()
 
     def _is_connected(self):
