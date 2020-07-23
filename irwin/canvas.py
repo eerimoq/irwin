@@ -46,8 +46,17 @@ class Canvas:
         steps = max(abs(x_diff), abs(y_diff))
         x_slope = x_diff / steps
         y_slope = y_diff / steps
+        offset = 0
 
-        for i in range(steps):
+        # Crop for better performance when the line is mostly outside
+        # the canvas.
+        if x0_dot < 0:
+            offset = int(-x0_dot / x_slope)
+
+        if x1_dot > self._x_dots:
+            steps -= int((x1_dot - self._x_dots) / x_slope)
+
+        for i in range(offset, steps):
             self._draw_dot(int(x0_dot + x_slope * i), int(y0_dot + y_slope * i))
 
     def _draw_dot(self, x_dot, y_dot):

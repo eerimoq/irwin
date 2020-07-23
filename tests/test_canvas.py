@@ -98,19 +98,87 @@ class CanvasTest(unittest.TestCase):
     def test_draw_line_partly_outside_canvas(self):
         canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
 
-        canvas.draw_line(-1, -1, 3, 3)
+        canvas.draw_line(-1000000000, -1000000000, 3000000000, 3000000000)
 
         self.assertCanvas(canvas.render(),
                           '⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎\n'
                           '⠀⠀⠀⠀⠀⠀⠀⢀⠎⠀\n'
                           '⠀⠀⠀⠀⠀⠀⢀⠎⠀⠀\n'
                           '⠀⠀⠀⠀⠀⢀⠎⠀⠀⠀\n'
-                          '⠀⠀⠀⠀⠀⡎⠀⠀⠀⠀\n'
-                          '⠀⠀⠀⠀⡜⠀⠀⠀⠀⠀\n'
-                          '⠀⠀⠀⡜⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⢀⠎⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⢀⠎⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⢀⠎⠀⠀⠀⠀⠀⠀\n'
                           '⠀⠀⡜⠀⠀⠀⠀⠀⠀⠀\n'
                           '⠀⡜⠀⠀⠀⠀⠀⠀⠀⠀\n'
                           '⡜⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+
+    def test_draw_line_partly_outside_canvas_2(self):
+        canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
+
+        canvas.draw_line(-1, -3, 3, 5)
+
+        self.assertCanvas(canvas.render(),
+                          '⠀⠀⠀⠀⠀⠀⢀⠇⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⡸⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⢀⠇⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⡸⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀')
+
+    def test_draw_line_partly_outside_canvas_3(self):
+        canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
+
+        canvas.draw_line(-1, 5, 3, -3)
+
+        self.assertCanvas(canvas.render(),
+                          '⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀')
+
+    def test_draw_line_partly_outside_canvas_4(self):
+        canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
+
+        canvas.draw_line(-2, 0, -1, 0)
+
+        self.assertCanvas(canvas.render(),
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+
+    def test_draw_line_partly_outside_canvas_5(self):
+        canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
+
+        canvas.draw_line(1, 1, 3, -1)
+
+        self.assertCanvas(canvas.render(),
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠘⡄⠀⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠘⡄⠀⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠘⡄⠀⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠘⡄⠀\n'
+                          '⠀⠀⠀⠀⠀⠀⠀⠀⠘⢄')
 
     def test_draw_line_length_zero(self):
         canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
