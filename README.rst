@@ -114,6 +114,39 @@ The output:
    ⡇⠀⡠⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⢄⠀⢸
    ⣧⣊⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣑⣼
 
+Line plot
+"""""""""
+
+Not yet implemented.
+
+.. code-block:: python
+
+   import math
+   import numpy
+   import irwin
+
+   x = numpy.linspace(0, 2 * math.pi)
+   y = numpy.sin(x)
+
+   print(irwin.plot(40, 20, x, y))
+
+Scatter plot
+""""""""""""
+
+Not yet implemented.
+
+.. code-block:: python
+
+   import math
+   import random
+   import numpy
+   import irwin
+
+   x = numpy.linspace(0, 2 * math.pi)
+   y = numpy.cos(x) + random.random() / 10;
+
+   print(irwin.scatter(40, 20, x, y))
+
 .. |buildstatus| image:: https://travis-ci.com/eerimoq/irwin.svg?branch=master
 .. _buildstatus: https://travis-ci.com/eerimoq/irwin
 
