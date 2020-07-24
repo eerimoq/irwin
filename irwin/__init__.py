@@ -7,14 +7,56 @@ from .version import __version__
 from . import timeseries
 
 
+def create_title(path, command):
+    title = []
+
+    if path is not None:
+        title.append(path)
+
+    if command is not None:
+        title.append(command)
+
+    return '; '.join(title)
+
+
+def load_samples(path):
+    timestamps = []
+    values = []
+
+    if path is not None:
+        with open(path, 'r') as fin:
+            for sample in fin.read().split():
+                timestamp, value = sample.split(',')
+                timestamps.append(float(timestamp))
+                values.append(float(value))
+
+    return timestamps, values
+
+
+def create_producer(command):
+    if command is None:
+        return None
+
+    return timeseries.OsCommandProducer(command)
+
+
 def do_main(args):
-    timeseries.run_curses(args.file,
-                          args.command,
+    timestamps, values = load_samples(args.path)
+
+    timeseries.run_curses(create_title(args.path, args.command),
+                          timestamps,
+                          values,
+                          create_producer(args.command),
                           args.algorithm,
                           args.y_min,
                           args.y_max,
+                          args.y_min,
+                          args.y_max,
                           args.scale,
-                          args.offset)
+                          args.offset,
+                          10800,
+                          1,
+                          60)
 
 
 def main():
@@ -51,7 +93,7 @@ def main():
                         help='Value offset (default: %(default)s).')
     parser.add_argument('-c', '--command',
                         help='Command to run periodically.')
-    parser.add_argument('file',
+    parser.add_argument('path',
                         nargs='?',
                         help='File with data to plot.')
 

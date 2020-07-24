@@ -36,24 +36,48 @@ def format_clock(timestamp):
 
 class Producer(threading.Thread):
 
-    def __init__(self, command, output_queue):
+    def __init__(self):
         super().__init__()
-        self._output_queue = output_queue
+        self.output_queue = None
         self.daemon = True
-        self._command = command
         self._interval = 1
 
     def run(self):
         while True:
             timestamp = time.time()
-            output = subprocess.run(self._command,
-                                    shell=True,
-                                    capture_output=True).stdout
-            self._output_queue.put((timestamp, output))
+            output = self.execute_command()
+            self.output_queue.put((timestamp, output))
             time.sleep(self._interval)
 
     def is_connected(self):
         return True
+
+    def execute_command(self):
+        return None
+
+
+class OsCommandProducer(Producer):
+
+    def __init__(self, command):
+        super().__init__()
+        self._command = command
+        self._connected = False
+
+    def execute_command(self):
+        try:
+            output = subprocess.run(self._command,
+                                    shell=True,
+                                    capture_output=True,
+                                    check=True).stdout.decode()
+            self._connected = True
+        except subprocess.CalledProcessError:
+            output = None
+            self._connected = False
+
+        return output
+
+    def is_connected(self):
+        return self._connected
 
 
 class QuitError(Exception):
@@ -72,30 +96,29 @@ class Plot:
 
     def __init__(self,
                  stdscr,
-                 path,
-                 command,
+                 title,
+                 timestamps,
+                 values,
+                 producer,
                  algorithm,
                  y_min,
                  y_max,
+                 y_lower_limit,
+                 y_upper_limit,
                  scale,
-                 offset):
+                 offset,
+                 max_age,
+                 interval,
+                 timespan):
         self._stdscr = stdscr
-        title = []
-        
-        if path is not None:
-            title.append(path)
-
-        if command is not None:
-            title.append(command)
-
-        self._title = '; '.join(title)
+        self._title = title
         self._output_queue = queue.Queue()
         self._nrows, self._ncols = stdscr.getmaxyx()
         self._modified = True
         self._show_help = False
         self._playing = True
-        self._data = deque(maxlen=1000)
-        self._timespan = 60
+        self._data = deque(maxlen=int(max_age / interval))
+        self._timespan = timespan
         self._valuespan = 1
         self._x_axis_center = None
         self._y_axis_center = None
@@ -110,8 +133,8 @@ class Plot:
         self._y_max = y_max
         self._previous_timestamp = None
         self._previous_value = None
-        self._y_lower_limit = y_min
-        self._y_upper_limit = y_max
+        self._y_lower_limit = y_lower_limit
+        self._y_upper_limit = y_upper_limit
 
         stdscr.keypad(True)
         stdscr.nodelay(True)
@@ -120,30 +143,20 @@ class Plot:
         curses.init_pair(1, curses.COLOR_CYAN, -1)
         curses.init_pair(2, curses.COLOR_RED, -1)
 
-        if path is not None:
-            timestamps = []
-            values = []
+        for timestamp, value in zip(timestamps, values):
+            self.process_data(timestamp, value)
 
-            with open(path, 'r') as fin:
-                for sample in fin.read().split():
-                    timestamp, value = sample.split(',')
-                    timestamps.append(float(timestamp))
-                    values.append(float(value))
+        if producer is not None:
+            producer.output_queue = self._output_queue
+            producer.start()
 
-            for timestamp, value in zip(timestamps, values):
-                self.process_data(timestamp, value)
-
-            if timestamps:
-                self._timespan = max(timestamps) - min(timestamps)
-                self._valuespan = max(values) - min(values)
-
-        self._producer = Producer(command, self._output_queue)
-
-        if command is not None:
-            self._producer.start()
+        self._producer = producer
 
     def _is_connected(self):
-        return self._producer.is_connected()
+        if self._producer is None:
+            return True
+        else:
+            return self._producer.is_connected()
 
     @property
     def timespan(self):
@@ -582,7 +595,7 @@ class Plot:
         try:
             while True:
                 timestamp, output = self._output_queue.get_nowait()
-                self.process_data(timestamp, output.decode())
+                self.process_data(timestamp, output)
         except queue.Empty:
             pass
 
@@ -595,22 +608,36 @@ class Plot:
             self._modified = True
 
 
-def run_curses(path,
-               command,
+def run_curses(title,
+               timestamps,
+               values,
+               producer,
                algorithm,
                y_min,
                y_max,
+               y_lower_limit,
+               y_upper_limit,
                scale,
-               offset):
+               offset,
+               max_age,
+               interval,
+               timespan):
     def plot(stdscr):
         Plot(stdscr,
-             path,
-             command,
+             title,
+             timestamps,
+             values,
+             producer,
              algorithm,
              y_min,
              y_max,
+             y_lower_limit,
+             y_upper_limit,
              scale,
-             offset).run()
+             offset,
+             max_age,
+             interval,
+             timespan).run()
 
     try:
         curses.wrapper(plot)
