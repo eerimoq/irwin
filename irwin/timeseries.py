@@ -36,11 +36,11 @@ def format_clock(timestamp):
 
 class Producer(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, interval):
         super().__init__()
         self.output_queue = None
         self.daemon = True
-        self._interval = 1
+        self._interval = interval
 
     def run(self):
         while True:
@@ -58,8 +58,8 @@ class Producer(threading.Thread):
 
 class OsCommandProducer(Producer):
 
-    def __init__(self, command):
-        super().__init__()
+    def __init__(self, command, interval):
+        super().__init__(interval)
         self._command = command
         self._connected = False
 

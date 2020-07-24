@@ -33,20 +33,21 @@ def load_samples(path):
     return timestamps, values
 
 
-def create_producer(command):
+def create_producer(command, interval):
     if command is None:
         return None
 
-    return timeseries.OsCommandProducer(command)
+    return timeseries.OsCommandProducer(command, interval)
 
 
 def do_main(args):
     timestamps, values = load_samples(args.path)
+    interval = 1
 
     timeseries.run_curses(create_title(args.path, args.command),
                           timestamps,
                           values,
-                          create_producer(args.command),
+                          create_producer(args.command, interval),
                           args.algorithm,
                           args.y_min,
                           args.y_max,
@@ -55,7 +56,7 @@ def do_main(args):
                           args.scale,
                           args.offset,
                           10800,
-                          1,
+                          interval,
                           60)
 
 
