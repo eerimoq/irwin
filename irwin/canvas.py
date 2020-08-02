@@ -59,6 +59,18 @@ class Canvas:
         for i in range(offset, steps):
             self._draw_dot(int(x0_dot + x_slope * i), int(y0_dot + y_slope * i))
 
+    def plot(self, x, y):
+        if len(x) == 0 or len(y) == 0:
+            return
+
+        x0 = x[0]
+        y0 = y[0]
+
+        for x1, y1 in zip(x[1:], y[1:]):
+            self.draw_line(x0, y0, x1, y1)
+            x0 = x1
+            y0 = y1
+
     def _draw_dot(self, x_dot, y_dot):
         if not 0 <= x_dot < self._x_dots:
             return
