@@ -1,4 +1,6 @@
 import unittest
+import math
+import numpy
 
 import irwin
 
@@ -237,3 +239,10 @@ class CanvasTest(unittest.TestCase):
                           '⡇⠀⠀⠀⡠⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⢄⠀⠀⠀⢸\n'
                           '⡇⠀⡠⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⢄⠀⢸\n'
                           '⣧⣊⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣑⣼')
+
+    def test_plot(self):
+        x = numpy.linspace(0, 2 * math.pi)
+        y = numpy.sin(x)
+
+        self.assertCanvas(irwin.plot(40, 20, x, y),
+                          '')

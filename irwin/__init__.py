@@ -7,6 +7,10 @@ from .version import __version__
 from . import timeseries
 
 
+def plot(height, width, x, y):
+    return timeseries.plot(height, width, x, y)
+
+
 def create_title(path, command):
     title = []
 

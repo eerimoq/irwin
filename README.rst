@@ -128,7 +128,7 @@ Not yet implemented.
    x = numpy.linspace(0, 2 * math.pi)
    y = numpy.sin(x)
 
-   print(irwin.plot(40, 20, x, y))
+   print(irwin.plot(x, y))
 
 Scatter plot
 """"""""""""
@@ -145,7 +145,7 @@ Not yet implemented.
    x = numpy.linspace(0, 2 * math.pi)
    y = numpy.cos(x) + random.random() / 10;
 
-   print(irwin.scatter(40, 20, x, y))
+   print(irwin.scatter(x, y))
 
 .. |buildstatus| image:: https://travis-ci.com/eerimoq/irwin.svg?branch=master
 .. _buildstatus: https://travis-ci.com/eerimoq/irwin
