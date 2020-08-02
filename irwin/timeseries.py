@@ -421,7 +421,7 @@ class Plot:
                         x_axis_maximum,
                         y_axis_minimum,
                         y_axis_maximum)
-        canvas.plot(timestamps, values)
+        canvas.draw_lines(timestamps, values)
 
         for row, line in enumerate(canvas.render().splitlines()):
             for mo in RE_SPLIT.finditer(line):

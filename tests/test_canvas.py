@@ -244,7 +244,7 @@ class CanvasTest(unittest.TestCase):
         canvas = irwin.Canvas(40, 20, 0, 2 * math.pi, -1, 1)
         x = numpy.linspace(0, 2 * math.pi)
         y = numpy.sin(x)
-        canvas.plot(x, y)
+        canvas.draw_lines(x, y)
 
         self.assertCanvas(canvas.render(),
                           '⠀⠀⠀⠀⠀⠀⠀⢀⠔⠒⠒⠢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n'
