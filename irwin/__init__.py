@@ -7,6 +7,14 @@ from .version import __version__
 from . import timeseries
 
 
+def plot(x, y, width=80, height=40):
+    """Plot given x-y values, connected with lines.
+
+    """
+    
+    return ''
+
+
 def create_title(path, command):
     title = []
 

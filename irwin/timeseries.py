@@ -608,6 +608,14 @@ class Plot:
             self._modified = True
 
 
+def plot(height, width, x, y):
+    return Plot('Untitled',
+                x,
+                y,
+                None,
+                None).render()
+
+
 def run_curses(title,
                timestamps,
                values,
