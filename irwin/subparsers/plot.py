@@ -1,37 +1,36 @@
-from .. import timeseries
+from .. import plot
 
 
 def load_samples(path):
-    timestamps = []
-    values = []
+    x = []
+    y = []
 
-    if path is not None:
-        with open(path, 'r') as fin:
-            for sample in fin.read().split():
-                timestamp, value = sample.split(',')
-                timestamps.append(float(timestamp))
-                values.append(float(value))
+    with open(path, 'r') as fin:
+        for sample in fin.read().split():
+            xv, yv = sample.split(',')
+            x.append(float(xv))
+            y.append(float(yv))
 
-    return timestamps, values
+    return x, y
 
 
 def _do_plot(args):
     x, y = load_samples(args.path)
 
-    timeseries.run_curses(args.path,
-                          x,
-                          y,
-                          None,
-                          'none',
-                          None,
-                          None,
-                          None,
-                          None,
-                          1,
-                          0,
-                          10800,
-                          1,
-                          x[-1] - x[0])
+    plot.run_curses(args.path,
+                    x,
+                    y,
+                    None,
+                    'none',
+                    None,
+                    None,
+                    None,
+                    None,
+                    1,
+                    0,
+                    10800,
+                    1,
+                    x[-1] - x[0])
 
 
 def add_subparser(parser):
@@ -39,6 +38,10 @@ def add_subparser(parser):
         'plot',
         description='Plot samples from file.')
 
+    parser.add_argument('-t', '--type',
+                        choices=('line', 'scatter'),
+                        default='line',
+                        help='Plot type (default: %(default)s).')
     parser.add_argument('path',
                         help='File with data to plot.')
     parser.set_defaults(func=_do_plot)
