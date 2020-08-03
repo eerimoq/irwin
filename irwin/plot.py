@@ -46,9 +46,6 @@ class Producer(threading.Thread):
             self.output_queue.put((float(x), y))
             time.sleep(self._interval)
 
-    def is_connected(self):
-        return True
-
     def execute_command(self):
         return None
 
@@ -58,7 +55,6 @@ class OsCommandProducer(Producer):
     def __init__(self, command, interval):
         super().__init__(interval)
         self._command = command
-        self._connected = False
 
     def execute_command(self):
         try:
@@ -66,15 +62,10 @@ class OsCommandProducer(Producer):
                                     shell=True,
                                     capture_output=True,
                                     check=True).stdout.decode()
-            self._connected = True
         except subprocess.CalledProcessError:
             output = None
-            self._connected = False
 
         return output
-
-    def is_connected(self):
-        return self._connected
 
 
 class QuitError(Exception):
@@ -121,8 +112,7 @@ class Plot:
         self._valuespan = 1
         self._x_axis_center = None
         self._y_axis_center = None
-        self._x_axis_zoom = 1
-        self._y_axis_zoom = 1
+        self._zoom = 1
         self._x_axis_minimum = None
         self._x_axis_maximum = None
         self._y_axis_maximum = 0
@@ -152,19 +142,13 @@ class Plot:
 
         self._producer = producer
 
-    def _is_connected(self):
-        if self._producer is None:
-            return True
-        else:
-            return self._producer.is_connected()
-
     @property
     def timespan(self):
-        return self._timespan / self._x_axis_zoom
+        return self._timespan / self._zoom
 
     @property
     def valuespan(self):
-        return self._valuespan / self._y_axis_zoom
+        return self._valuespan / self._zoom
 
     def run(self):
         while True:
@@ -249,8 +233,8 @@ class Plot:
 
             self._valuespan = y_axis_maximum - y_axis_minimum
 
-            y_axis_minimum /= self._y_axis_zoom
-            y_axis_maximum /= self._y_axis_zoom
+            y_axis_minimum /= self._zoom
+            y_axis_maximum /= self._zoom
         else:
             delta = max(self._y_max - self._y_min, 1)
             y_axis_minimum = self._y_min
@@ -358,26 +342,19 @@ class Plot:
         self.addstr_frame(0, frame_col_left, '┌' + (frame_ncols - 1) * '─' + '┐')
         self.addstr(0, frame_col_left + 1, f' {self._title} ')
 
-        x_zoom = zoom_number_to_text(self._x_axis_zoom)
-        y_zoom = zoom_number_to_text(self._y_axis_zoom)
-        zoom_text = f' {x_zoom}x,{y_zoom}x '
+        zoom = zoom_number_to_text(self._zoom)
+        zoom_text = f' {zoom}x '
+        col = frame_col_right
 
-        if self._playing:
-            playing_text = ' ▶ '
-        else:
-            playing_text = ' ⏸ '
+        if self._producer is None:
+            if self._playing:
+                playing_text = ' ▶ '
+            else:
+                playing_text = ' ⏸ '
 
-        if self._is_connected():
-            status_text = ' Connected '
-            col = frame_col_right - len(status_text)
-            self.addstr(0, col, status_text)
-        else:
-            status_text = ' Disconnected '
-            col = frame_col_right - len(status_text)
-            self.addstr_red_bold(0, col, status_text)
+            col -= len(playing_text) + 1
+            self.addstr(0, col, playing_text)
 
-        col -= len(playing_text) + 1
-        self.addstr(0, col, playing_text)
         col -= len(zoom_text) + 1
         self.addstr(0, col, zoom_text)
 
@@ -480,7 +457,8 @@ class Plot:
         if key in ['h', '?']:
             self._show_help = True
         elif key == ' ':
-            self._playing = not self._playing
+            if self._producer is not None:
+                self._playing = not self._playing
         elif key == 'KEY_UP':
             self.ensure_moving()
             self._y_axis_center += self.valuespan / 8
@@ -494,8 +472,7 @@ class Plot:
             self.ensure_moving()
             self._x_axis_center += self.timespan / 8
         elif key == 'r':
-            self._x_axis_zoom = 1
-            self._y_axis_zoom = 1
+            self._zoom = 1
             self._x_axis_center = None
             self._y_axis_center = None
         elif key == 'c':
@@ -507,15 +484,13 @@ class Plot:
         elif key in ['kUP5', 'CTL_UP']:
             self.ensure_moving()
 
-            if self._x_axis_zoom < 16384:
-                self._x_axis_zoom *= 2
-                self._y_axis_zoom *= 2
+            if self._zoom < 16384:
+                self._zoom *= 2
         elif key in ['kDN5', 'CTL_DOWN']:
             self.ensure_moving()
 
-            if self._x_axis_zoom > 1 / 16384:
-                self._x_axis_zoom /= 2
-                self._y_axis_zoom /= 2
+            if self._zoom > 1 / 16384:
+                self._zoom /= 2
 
     def ensure_moving(self):
         if not self.is_moved():

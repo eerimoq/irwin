@@ -52,7 +52,7 @@ print(f'{random.random()},{random.random()}')`` periodically.
 .. code-block:: text
 
    $ irwin plot -t scatter \
-         -c "python3 -c "import random ; print(f'{random.random()},{random.random()}')" \
+         -c "python3 -c \"import random ; print(f'{random.random()},{random.random()}')\"" \
          data.txt
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter-command.gif

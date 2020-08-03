@@ -49,9 +49,6 @@ class Producer(threading.Thread):
             self.output_queue.put((timestamp, output))
             time.sleep(self._interval)
 
-    def is_connected(self):
-        return True
-
     def execute_command(self):
         return None
 
@@ -61,7 +58,6 @@ class OsCommandProducer(Producer):
     def __init__(self, command, interval):
         super().__init__(interval)
         self._command = command
-        self._connected = False
 
     def execute_command(self):
         try:
@@ -69,15 +65,10 @@ class OsCommandProducer(Producer):
                                     shell=True,
                                     capture_output=True,
                                     check=True).stdout.decode()
-            self._connected = True
         except subprocess.CalledProcessError:
             output = None
-            self._connected = False
 
         return output
-
-    def is_connected(self):
-        return self._connected
 
 
 class QuitError(Exception):
@@ -151,12 +142,6 @@ class Plot:
             producer.start()
 
         self._producer = producer
-
-    def _is_connected(self):
-        if self._producer is None:
-            return True
-        else:
-            return self._producer.is_connected()
 
     @property
     def timespan(self):
@@ -374,20 +359,12 @@ class Plot:
         x_zoom = zoom_number_to_text(self._x_axis_zoom)
         y_zoom = zoom_number_to_text(self._y_axis_zoom)
         zoom_text = f' {x_zoom}x,{y_zoom}x '
+        col = frame_col_right
 
         if self._playing:
             playing_text = ' ▶ '
         else:
             playing_text = ' ⏸ '
-
-        if self._is_connected():
-            status_text = ' Connected '
-            col = frame_col_right - len(status_text)
-            self.addstr(0, col, status_text)
-        else:
-            status_text = ' Disconnected '
-            col = frame_col_right - len(status_text)
-            self.addstr_red_bold(0, col, status_text)
 
         col -= len(playing_text) + 1
         self.addstr(0, col, playing_text)
