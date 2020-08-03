@@ -169,7 +169,7 @@ Not yet implemented.
    import irwin
 
    x = numpy.linspace(0, 2 * math.pi)
-   y = numpy.cos(x) + random.random() / 4;
+   y = [v + random.random() / 4 for v in numpy.cos(x)]
 
    print(irwin.scatter(x, y))
 
