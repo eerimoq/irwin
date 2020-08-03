@@ -1,6 +1,18 @@
 from .. import plot
 
 
+def create_title(path, command):
+    title = []
+
+    if path is not None:
+        title.append(path)
+
+    if command is not None:
+        title.append(command)
+
+    return '; '.join(title)
+
+
 def load_samples(path):
     x = []
     y = []
@@ -27,7 +39,7 @@ def _do_plot(args):
     interval = 1
     
     plot.run_curses(args.type,
-                    args.path,
+                    create_title(args.path, args.command),
                     x,
                     y,
                     create_producer(args.command, interval),

@@ -346,7 +346,7 @@ class Plot:
         zoom_text = f' {zoom}x '
         col = frame_col_right
 
-        if self._producer is None:
+        if self._producer is not None:
             if self._playing:
                 playing_text = ' ▶ '
             else:
