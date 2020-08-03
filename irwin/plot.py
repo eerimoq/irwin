@@ -123,7 +123,8 @@ class Plot:
         self._y_axis_center = None
         self._x_axis_zoom = 1
         self._y_axis_zoom = 1
-        self._x_axis_maximum = time.time()
+        self._x_axis_minimum = None
+        self._x_axis_maximum = None
         self._y_axis_maximum = 0
         self._algorithm = algorithm
         self._scale = scale
@@ -216,10 +217,17 @@ class Plot:
     def calc_x_limits(self):
         if self.is_moved():
             maximum = self._x_axis_center + self.timespan / 2
+            minimum = maximum - self.timespan
         else:
-            maximum = self._x_axis_maximum
+            if self._x_axis_maximum is not None:
+                maximum = self._x_axis_maximum
+            else:
+                maximum = 0
 
-        minimum = maximum - self.timespan
+            if self._x_axis_minimum is not None:
+                minimum = self._x_axis_minimum
+            else:
+                minimum = 0
 
         return minimum, maximum
 
@@ -297,12 +305,6 @@ class Plot:
         return timestamps, values
 
     def draw_main(self):
-        if self._playing and not self.is_moved():
-            if self._data:
-                self._x_axis_maximum = self._data[-1][0]
-            else:
-                self._x_axis_maximum = time.time()
-
         x_axis_minimum, x_axis_maximum = self.calc_x_limits()
         timestamps, values = self.data_timespan_slice(x_axis_minimum,
                                                       x_axis_maximum)
@@ -411,7 +413,7 @@ class Plot:
             canvas.draw_lines(timestamps, values)
         else:
             canvas.draw_points(timestamps, values)
-            
+
         for row, line in enumerate(canvas.render().splitlines()):
             for mo in RE_SPLIT.finditer(line):
                 self.addstr(row + 1, frame_col_left + 1 + mo.start(1), mo.group(1))
@@ -498,6 +500,8 @@ class Plot:
             self._y_axis_center = None
         elif key == 'c':
             self._data.clear()
+            self._x_axis_minimum = None
+            self._x_axis_maximum = None
             self._previous_timestamp = None
             self._previous_value = None
         elif key in ['kUP5', 'CTL_UP']:
@@ -505,17 +509,13 @@ class Plot:
 
             if self._x_axis_zoom < 16384:
                 self._x_axis_zoom *= 2
-
-                if self.is_moved():
-                    self._y_axis_zoom *= 2
+                self._y_axis_zoom *= 2
         elif key in ['kDN5', 'CTL_DOWN']:
             self.ensure_moving()
 
             if self._x_axis_zoom > 1 / 16384:
                 self._x_axis_zoom /= 2
-
-                if self.is_moved():
-                    self._y_axis_zoom /= 2
+                self._y_axis_zoom /= 2
 
     def ensure_moving(self):
         if not self.is_moved():
@@ -577,6 +577,13 @@ class Plot:
                     value = min(value, self._y_upper_limit)
 
         self._data.append((timestamp, value))
+
+        if self._x_axis_minimum is None or timestamp < self._x_axis_minimum:
+            self._x_axis_minimum = timestamp
+
+        if self._x_axis_maximum is None or timestamp > self._x_axis_maximum:
+            self._x_axis_maximum = timestamp
+
         self._modified = True
 
     def update_data(self):
