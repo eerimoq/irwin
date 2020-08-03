@@ -42,7 +42,8 @@ class Producer(threading.Thread):
         while True:
             timestamp = time.time()
             output = self.execute_command()
-            self.output_queue.put((timestamp, output))
+            x, y = output.split(',')
+            self.output_queue.put((float(x), y))
             time.sleep(self._interval)
 
     def is_connected(self):
@@ -92,6 +93,7 @@ class Plot:
 
     def __init__(self,
                  stdscr,
+                 kind,
                  title,
                  timestamps,
                  values,
@@ -108,6 +110,7 @@ class Plot:
                  timespan):
         self._stdscr = stdscr
         self._title = title
+        self._kind = kind
         self._output_queue = queue.Queue()
         self._nrows, self._ncols = stdscr.getmaxyx()
         self._modified = True
@@ -283,27 +286,13 @@ class Plot:
                             x_axis_maximum):
         timestamps = []
         values = []
-        timestamp_before_x_axis_minimim = None
-        value_before_x_axis_minimim = None
 
         for timestamp, value in self._data:
             if value is None:
                 continue
 
-            if timestamp < x_axis_minimum:
-                timestamp_before_x_axis_minimim = timestamp
-                value_before_x_axis_minimim = value
-            else:
-                if timestamp_before_x_axis_minimim is not None:
-                    timestamps.append(timestamp_before_x_axis_minimim)
-                    values.append(value_before_x_axis_minimim)
-                    timestamp_before_x_axis_minimim = None
-
-                timestamps.append(timestamp)
-                values.append(value)
-
-                if timestamp > x_axis_maximum:
-                    break
+            timestamps.append(timestamp)
+            values.append(value)
 
         return timestamps, values
 
@@ -417,8 +406,12 @@ class Plot:
                         x_axis_maximum,
                         y_axis_minimum,
                         y_axis_maximum)
-        canvas.draw_lines(timestamps, values)
 
+        if self._kind == 'line':
+            canvas.draw_lines(timestamps, values)
+        else:
+            canvas.draw_points(timestamps, values)
+            
         for row, line in enumerate(canvas.render().splitlines()):
             for mo in RE_SPLIT.finditer(line):
                 self.addstr(row + 1, frame_col_left + 1 + mo.start(1), mo.group(1))
@@ -611,7 +604,8 @@ def plot(height, width, x, y):
                 None).render()
 
 
-def run_curses(title,
+def run_curses(kind,
+               title,
                timestamps,
                values,
                producer,
@@ -627,6 +621,7 @@ def run_curses(title,
                timespan):
     def plot(stdscr):
         Plot(stdscr,
+             kind,
              title,
              timestamps,
              values,

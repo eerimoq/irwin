@@ -1,28 +1,13 @@
 from .. import timeseries
 
 
-def plot(x, y, width=80, height=40):
-    """Plot given x-y values, connected with lines.
-
-    """
-    
-    return ''
-
-
-def create_producer(command, interval):
-    if command is None:
-        return None
-
-    return timeseries.OsCommandProducer(command, interval)
-
-
 def _do_watch(args):
     interval = 1
 
     timeseries.run_curses(args.command,
                           [],
                           [],
-                          create_producer(args.command, interval),
+                          timeseries.OsCommandProducer(args.command, interval),
                           args.algorithm,
                           args.y_min,
                           args.y_max,

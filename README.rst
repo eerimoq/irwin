@@ -21,27 +21,6 @@ Examples
 Command line
 ^^^^^^^^^^^^
 
-The watch subcommand
-""""""""""""""""""""
-
-Run ``cat /proc/uptime | awk '{ print \$1 }'`` periodically any plot
-its output.
-
-.. code-block:: text
-
-   $ irwin watch "cat /proc/uptime | awk '{ print \$1 }'"
-
-.. image:: https://github.com/eerimoq/irwin/raw/master/docs/uptime.gif
-
-This is how to plot the CPU load on a machine with 4 CPUs.
-
-.. code-block:: text
-
-   $ irwin watch -a delta -y 0 -Y 100 -s -0.25 -o 100 \
-         "head -1 /proc/stat | awk '{ print \$5 }'"
-
-.. image:: https://github.com/eerimoq/irwin/raw/master/docs/cpu.gif
-
 The plot subcommand
 """""""""""""""""""
            
@@ -66,6 +45,38 @@ Give ``-t scatter`` to create a scatter plot.
    $ irwin plot -t scatter data.txt
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter.gif
+
+Add more samples by running ``python3 -c "import random ;
+print(f'{random.random()},{random.random()}')`` periodically.
+           
+.. code-block:: text
+
+   $ irwin plot -t scatter \
+         -c "python3 -c "import random ; print(f'{random.random()},{random.random()}')" \
+         data.txt
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter-command.gif
+           
+The watch subcommand
+""""""""""""""""""""
+
+Run ``cat /proc/uptime | awk '{ print \$1 }'`` periodically any plot
+its output.
+
+.. code-block:: text
+
+   $ irwin watch "cat /proc/uptime | awk '{ print \$1 }'"
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/uptime.gif
+
+This is how to plot the CPU load on a machine with 4 CPUs.
+
+.. code-block:: text
+
+   $ irwin watch -a delta -y 0 -Y 100 -s -0.25 -o 100 \
+         "head -1 /proc/stat | awk '{ print \$5 }'"
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/cpu.gif
 
 Scripting
 ^^^^^^^^^

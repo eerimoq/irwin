@@ -14,13 +14,23 @@ def load_samples(path):
     return x, y
 
 
+
+def create_producer(command, interval):
+    if command is None:
+        return None
+    
+    return plot.OsCommandProducer(command, interval)
+
+
 def _do_plot(args):
     x, y = load_samples(args.path)
-
-    plot.run_curses(args.path,
+    interval = 1
+    
+    plot.run_curses(args.type,
+                    args.path,
                     x,
                     y,
-                    None,
+                    create_producer(args.command, interval),
                     'none',
                     None,
                     None,
@@ -29,7 +39,7 @@ def _do_plot(args):
                     1,
                     0,
                     10800,
-                    1,
+                    interval,
                     x[-1] - x[0])
 
 
@@ -42,6 +52,8 @@ def add_subparser(parser):
                         choices=('line', 'scatter'),
                         default='line',
                         help='Plot type (default: %(default)s).')
+    parser.add_argument('-c', '--command',
+                        help='Command to execute periodically.')
     parser.add_argument('path',
                         help='File with data to plot.')
     parser.set_defaults(func=_do_plot)
