@@ -23,7 +23,7 @@ Command line
 
 The plot subcommand
 """""""""""""""""""
-           
+
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.
 
@@ -35,20 +35,20 @@ by any whitespace character.
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/plot.gif
 
 Give ``-t scatter`` to create a scatter plot.
-           
+
 .. code-block:: text
 
    $ python3 -c "import math, random, numpy ; \
          x = numpy.linspace(0, 3 * math.pi, 200) ; \
-         y = [v + random.random() / 5 for v in numpy.cos(x)] ; \
-         print(' '.join([f'{x},{y}' for x, y in zip(x,y)]))" > data.txt
+         y = [v + random.random() / 4 for v in numpy.cos(x)] ; \
+         print(' '.join([f'{x},{y}' for x, y in zip(x, y)]))" > data.txt
    $ irwin plot -t scatter data.txt
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter.gif
 
 Add more samples by running ``python3 -c "import random ;
 print(f'{random.random()},{random.random()}')`` periodically.
-           
+
 .. code-block:: text
 
    $ irwin plot -t scatter \
@@ -56,7 +56,7 @@ print(f'{random.random()},{random.random()}')`` periodically.
          data.txt
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter-command.gif
-           
+
 The watch subcommand
 """"""""""""""""""""
 
@@ -169,7 +169,7 @@ Not yet implemented.
    import irwin
 
    x = numpy.linspace(0, 2 * math.pi)
-   y = numpy.cos(x) + random.random() / 10;
+   y = numpy.cos(x) + random.random() / 4;
 
    print(irwin.scatter(x, y))
 
