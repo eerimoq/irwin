@@ -21,15 +21,15 @@ Examples
 Command line
 ^^^^^^^^^^^^
 
-Time series
-"""""""""""
+The watch subcommand
+""""""""""""""""""""
 
 Run ``cat /proc/uptime | awk '{ print \$1 }'`` periodically any plot
 its output.
 
 .. code-block:: text
 
-   $ irwin -c "cat /proc/uptime | awk '{ print \$1 }'"
+   $ irwin watch "cat /proc/uptime | awk '{ print \$1 }'"
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/uptime.gif
 
@@ -37,20 +37,35 @@ This is how to plot the CPU load on a machine with 4 CPUs.
 
 .. code-block:: text
 
-   $ irwin -a delta -y 0 -Y 100 -s -0.25 -o 100 \
-         -c "head -1 /proc/stat | awk '{ print \$5 }'"
+   $ irwin watch -a delta -y 0 -Y 100 -s -0.25 -o 100 \
+         "head -1 /proc/stat | awk '{ print \$5 }'"
 
 .. image:: https://github.com/eerimoq/irwin/raw/master/docs/cpu.gif
 
+The plot subcommand
+"""""""""""""""""""
+           
 Read all data from given file and plot it. Data points are separated
 by any whitespace character.
 
 .. code-block:: text
 
    $ echo "0,2 1,1 2,0 3,-1 4,1 5,3 6,5 7,7" > data.txt
-   $ irwin data.txt
+   $ irwin plot data.txt
 
-.. image:: https://github.com/eerimoq/irwin/raw/master/docs/data.gif
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/plot.gif
+
+Give ``-t scatter`` to create a scatter plot.
+           
+.. code-block:: text
+
+   $ python3 -c "import math, random, numpy ; \
+         x = numpy.linspace(0, 3 * math.pi, 200) ; \
+         y = [v + random.random() / 5 for v in numpy.cos(x)] ; \
+         print(' '.join([f'{x},{y}' for x, y in zip(x,y)]))" > data.txt
+   $ irwin plot -t scatter data.txt
+
+.. image:: https://github.com/eerimoq/irwin/raw/master/docs/scatter.gif
 
 Scripting
 ^^^^^^^^^
