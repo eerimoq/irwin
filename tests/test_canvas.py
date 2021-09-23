@@ -284,3 +284,30 @@ class CanvasTest(unittest.TestCase):
                           "⡇⠀⠀⠀⠀⠀⠀⠀⠀⢸\n"
                           "⡇⠀⠀⠀⠀⠀⠀⠀⠀⢸\n"
                           "⣇⣀⣀⣀⣀⣀⣀⣀⣀⣸")
+
+    def test_calc_point_row_and_col(self):
+        canvas = irwin.Canvas(10, 10, 0, 2, 0, 2)
+
+        canvas.draw_point(0, 0)
+        canvas.draw_point(0, 2)
+        canvas.draw_point(2, 0)
+        canvas.draw_point(2, 2)
+        canvas.draw_point(0.5, 0.5)
+
+        self.assertCanvas(canvas.render(),
+                          "⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+                          "⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀")
+
+        self.assertEqual(canvas.calc_point_row_and_col(0, 0), (9, 0))
+        self.assertEqual(canvas.calc_point_row_and_col(0, 2), (0, 0))
+        self.assertEqual(canvas.calc_point_row_and_col(2, 0), (9, 9))
+        self.assertEqual(canvas.calc_point_row_and_col(2, 2), (0, 9))
+        self.assertEqual(canvas.calc_point_row_and_col(0.5, 0.5), (7, 2))

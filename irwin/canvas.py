@@ -81,6 +81,12 @@ class Canvas:
         self.draw_line(x1, y1, x1, y0)
         self.draw_line(x1, y0, x0, y0)
 
+    def calc_point_row_and_col(self, x, y):
+        x_col = self._value_to_dot_x(x) // 2
+        y_row = self._value_to_dot_y(y) // 4
+
+        return self._height - y_row - 1, x_col
+
     def _draw_dot(self, x_dot, y_dot):
         if not 0 <= x_dot < self._x_dots:
             return
