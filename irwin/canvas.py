@@ -75,6 +75,12 @@ class Canvas:
             x0 = x1
             y0 = y1
 
+    def draw_rectangle(self, x0, y0, x1, y1):
+        self.draw_line(x0, y0, x0, y1)
+        self.draw_line(x0, y1, x1, y1)
+        self.draw_line(x1, y1, x1, y0)
+        self.draw_line(x1, y0, x0, y0)
+
     def _draw_dot(self, x_dot, y_dot):
         if not 0 <= x_dot < self._x_dots:
             return
