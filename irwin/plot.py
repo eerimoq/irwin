@@ -168,7 +168,7 @@ class Plot:
             self._modified = False
 
     def redraw(self):
-        self._stdscr.clear()
+        self._stdscr.erase()
 
         if self._show_help:
             self.draw_help()
