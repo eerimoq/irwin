@@ -1,9 +1,14 @@
+import re
+
+
 INDEXES_TO_BIT = (
     (1 << 6, 1 << 7),
     (1 << 2, 1 << 5),
     (1 << 1, 1 << 4),
     (1 << 0, 1 << 3)
 )
+
+RE_SPLIT = re.compile(r'⠀*([^⠀]+)')
 
 
 class Canvas:
@@ -105,10 +110,13 @@ class Canvas:
         return int((value - self._y_min) * self._y_to_dot)
 
     def render(self):
-        lines = []
+        return '\n'.join(self.render_lines())
 
-        for row in self._canvas:
-            line = ''.join([chr(0x2800 + value) for value in row])
-            lines.insert(0, line)
+    def render_lines(self):
+        for row in reversed(self._canvas):
+            yield ''.join([chr(0x2800 + value) for value in row])
 
-        return '\n'.join(lines)
+    def render_segments(self):
+        for row, line in enumerate(self.render_lines()):
+            for mo in RE_SPLIT.finditer(line):
+                yield (row, mo.start(1), mo.group(1))

@@ -27,8 +27,6 @@ Help: h or ?\
 
 HELP_NCOLS = 60
 
-RE_SPLIT = re.compile(r'⠀*([^⠀]+)')
-
 
 class Producer(threading.Thread):
 
@@ -391,9 +389,8 @@ class Plot:
         else:
             canvas.draw_points(timestamps, values)
 
-        for row, line in enumerate(canvas.render().splitlines()):
-            for mo in RE_SPLIT.finditer(line):
-                self.addstr(row + 1, frame_col_left + 1 + mo.start(1), mo.group(1))
+        for row, col, data in canvas.render_segments():
+            self.addstr(row + 1, frame_col_left + 1 + col, data)
 
     def draw_x_axis(self, frame_nrows, grid_cols):
         for col, timestamp in grid_cols:
