@@ -8,8 +8,6 @@ INDEXES_TO_BIT = (
     (1 << 0, 1 << 3)
 )
 
-RE_SPLIT = re.compile(r'⠀*([^⠀]+)')
-
 
 def _format_segment(values):
     return ''.join([chr(0x2800 + value) for value in values])
