@@ -11,6 +11,10 @@ INDEXES_TO_BIT = (
 RE_SPLIT = re.compile(r'⠀*([^⠀]+)')
 
 
+def _format_segment(values):
+    return ''.join([chr(0x2800 + value) for value in values])
+
+
 class Canvas:
 
     def __init__(self, width, height, x_min, x_max, y_min, y_max):
@@ -114,9 +118,32 @@ class Canvas:
 
     def render_lines(self):
         for row in reversed(self._canvas):
-            yield ''.join([chr(0x2800 + value) for value in row])
+            yield _format_segment(row)
 
     def render_segments(self):
-        for row, line in enumerate(self.render_lines()):
-            for mo in RE_SPLIT.finditer(line):
-                yield (row, mo.start(1), mo.group(1))
+        for row, line in enumerate(reversed(self._canvas)):
+            pos = 0
+
+            while True:
+                start_pos = self.find_segment_start(line, pos)
+
+                if start_pos == -1:
+                    break
+
+                end_pos = line.find(0, start_pos)
+
+                if end_pos == -1:
+                    yield (row, start_pos, _format_segment(line[start_pos:]))
+                    break
+                else:
+                    yield (row, start_pos, _format_segment(line[start_pos:end_pos]))
+                    pos = end_pos
+
+    def find_segment_start(self, row, pos):
+        while pos < self._width:
+            if row[pos] != 0:
+                return pos
+
+            pos += 1
+
+        return -1
