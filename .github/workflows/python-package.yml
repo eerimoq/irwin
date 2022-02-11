@@ -3,11 +3,8 @@ name: Python package
 on: [push, pull_request]
 
 jobs:
-
   test:
-
     runs-on: ubuntu-20.04
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8
@@ -20,13 +17,12 @@ jobs:
         pip install -r requirements.txt
     - name: Test
       run: |
-        make test
+        python -m unittest
 
   release:
     needs: [test]
     runs-on: ubuntu-20.04
     if: startsWith(github.ref, 'refs/tags')
-
     steps:
     - name: Checkout
       uses: actions/checkout@v1

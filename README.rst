@@ -1,6 +1,3 @@
-|buildstatus|_
-|coverage|_
-
 Irwin
 =====
 
@@ -172,9 +169,3 @@ Not yet implemented.
    y = [v + random.random() / 4 for v in numpy.cos(x)]
 
    print(irwin.scatter(x, y))
-
-.. |buildstatus| image:: https://travis-ci.com/eerimoq/irwin.svg?branch=master
-.. _buildstatus: https://travis-ci.com/eerimoq/irwin
-
-.. |coverage| image:: https://coveralls.io/repos/github/eerimoq/irwin/badge.svg?branch=master
-.. _coverage: https://coveralls.io/github/eerimoq/irwin
