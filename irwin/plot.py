@@ -18,7 +18,8 @@ from .canvas import Canvas
 HELP_TEXT = '''\
 Quit: q or <Ctrl-C>
 Move: <Left>, <Right>, <Up> and <Down>
-Zoom: <Ctrl-Up> and <Ctrl-Down>
+Zoom in: + or <Ctrl-Up>
+Zoom out: - or <Ctrl-Down>
 Pause: <Space>
 Reset: r
 Clear: c
@@ -478,12 +479,12 @@ class Plot:
             self._x_axis_maximum = None
             self._previous_timestamp = None
             self._previous_value = None
-        elif key in ['kUP5', 'CTL_UP']:
+        elif key in ['+', 'kUP5', 'CTL_UP']:
             self.ensure_moving()
 
             if self._zoom < 16384:
                 self._zoom *= 2
-        elif key in ['kDN5', 'CTL_DOWN']:
+        elif key in ['-', 'kDN5', 'CTL_DOWN']:
             self.ensure_moving()
 
             if self._zoom > 1 / 16384:
